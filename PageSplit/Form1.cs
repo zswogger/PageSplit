@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using System.IO;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
-using System.Threading;
 
 namespace PageSplit
 {
@@ -42,27 +41,42 @@ namespace PageSplit
                     filePath = openFileDialog.FileName;
 
                     var appWord = new Microsoft.Office.Interop.Word.Application();
-                    if (appWord.Documents != null) // Verify word documents exist
-                    {
-                        var wordDocument = appWord.Documents.Open(filePath); // Open specified word doc
-                        var numberOfPages = wordDocument.ComputeStatistics(WdStatistic.wdStatisticPages, false); // Count number of pages
-                        string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop); // Get desktop path
-                        string file = Path.GetFileNameWithoutExtension(openFileDialog.FileName) + ".pdf"; // Get file name w/o extension
-                        string path = Path.Combine(desktop, file); // Combine desktop and file path into one file path
 
-                        DirectoryInfo dir = new DirectoryInfo(desktop + "\\Output"); // Create new folder on desktop named "Output"
+                    // Verify word documents exist
+                    if (appWord.Documents != null) 
+                    {
+                        // Open specified word doc
+                        var wordDocument = appWord.Documents.Open(filePath);
+
+                        // Count number of pages
+                        var numberOfPages = wordDocument.ComputeStatistics(WdStatistic.wdStatisticPages, false);
+
+                        // Get desktop path
+                        string desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+                        // Get file name w/o extension
+                        string file = Path.GetFileNameWithoutExtension(openFileDialog.FileName) + ".pdf";
+
+                        // Combine desktop and file path into one file path
+                        string path = Path.Combine(desktop, file);
+
+                        // Create new folder on desktop named "Output"
+                        DirectoryInfo dir = new DirectoryInfo(desktop + "\\Output"); 
+
                         dir.Create();
 
-                        string savepath = Path.Combine(desktop + "\\Output", file); // Create save path
+                        // Create save path
+                        string savepath = Path.Combine(desktop + "\\Output", file);
 
-                        if (wordDocument != null) // If word doc is not empty, export as pdf to new output folder
+                        // If word doc is not empty, export as pdf to new output folder
+                        if (wordDocument != null) 
                         {
-                            wordDocument.ExportAsFixedFormat(savepath,
-                        WdExportFormat.wdExportFormatPDF, false);
+                            wordDocument.ExportAsFixedFormat(savepath, WdExportFormat.wdExportFormatPDF, false);
                             wordDocument.Close();
                         }
 
-                        appWord.Quit(); // Close word doc
+                        // Close word doc
+                        appWord.Quit(); 
 
                         // Get a fresh copy of the sample PDF file
                         string filename = Path.GetFileNameWithoutExtension(openFileDialog.FileName) + ".pdf";
@@ -72,8 +86,11 @@ namespace PageSplit
                         // Open the file
                         PdfDocument inputDocument = PdfReader.Open(filename, PdfDocumentOpenMode.Import);
 
-                        String name = "";
-                        savepath = savepath.Replace(".pdf", ""); //Stops pdf from saving as fileName.pdf.pdf
+                        // Stops pdf from saving as fileName.pdf.pdf
+                        savepath = savepath.Replace(".pdf", ""); 
+
+                        // Each iteration of this loop will create a new pdf, add the current page to it,
+                        // and save it as a new document to the desktop "Output" folder
                         for (int idx = 0; idx < inputDocument.PageCount; idx++)
                         {
                             // Create new document
@@ -84,7 +101,7 @@ namespace PageSplit
 
                             // Add the page and save it
                             outputDocument.AddPage(inputDocument.Pages[idx]);
-                            outputDocument.Save(String.Format(savepath + "{0} - Page {1}.pdf", name, idx + 1));
+                            outputDocument.Save(String.Format(savepath + " - Page {0}.pdf", idx + 1));
                         }
                         lbl_message.Text = "Successfully created " + (inputDocument.PageCount + 1) + " new PDF documents!";
                     }

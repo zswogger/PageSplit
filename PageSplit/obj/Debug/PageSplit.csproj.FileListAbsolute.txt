@@ -19,3 +19,4 @@ C:\Users\zswogger\source\repos\PageSplit\PageSplit\bin\Debug\PageSplit.applicati
 C:\Users\zswogger\source\repos\PageSplit\PageSplit\obj\Debug\PageSplit.exe.manifest
 C:\Users\zswogger\source\repos\PageSplit\PageSplit\obj\Debug\PageSplit.application
 C:\Users\zswogger\source\repos\PageSplit\PageSplit\obj\Debug\PageSplit.form_home.resources
+C:\Users\zswogger\source\repos\PageSplit\PageSplit\obj\Debug\PageSplit.csproj.SuggestedBindingRedirects.cache
